@@ -1,0 +1,59 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your To Do List</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='foundation.css') }}">
+    <script src="js/vendor/modernizr.js"></script>
+  </head>
+  <body>
+
+    <div class="row">
+      <div class="large-12 columns">
+        <h1>To Do List</h1>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="large-12 columns">
+      	<div class="panel">
+
+            <div class="row">
+              <div class="large-5 medium-5 columns">
+                <form method='post' action="{{ url_for('home_page') }}">
+                <label>Create a new to do</label>
+                <input type="text" name='to_do' placeholder="example - buy monkeys" />
+              </div>
+              <button type='submit' class="small button" />Create</button>
+              <!-- need to add a user success message -->
+            </form>
+            </div>
+            {% block body %}
+
+              {% if get_flashed_messages() %}
+                <p class=flashes>
+                {% for message in get_flashed_messages() %}
+                  {{ message }}
+                {% endfor %}
+              </p>
+              {% endif %}
+
+            <div class="row">
+              <div class="large-5 medium-5 columns">
+                <a href="/list" class="small button">View List</a>
+              </div>
+            </div>
+            {% endblock %}
+
+      	</div>
+      </div>
+    </div>
+
+    <script src="js/vendor/jquery.js"></script>
+    <script src="js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+{% extends "index.html" %}
+{% block body %}
+
+
+<h3>Need To Do</h3>
+
+<form method='post' action="{{ url_for('list_completion') }}">
+<label>Tick boxes below, then click 'Completed' to remove an item from your list.</label>
+
+{% for id, task in entries %}
+<input id='{{ id }}' name='checkboxes' type="checkbox" value='{{ id }}'><label for="checkbox1">{{ task }}</label><br>
+{% endfor %}
+
+<br><button class="small button">Completed</button>
+<!-- need to add a user success message -->
+</form>
+{% endblock %}
