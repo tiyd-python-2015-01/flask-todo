@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <title>Things to do</title>
+  </head>
+  <body>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='templated-linear/css/style-desktop.css') }}">
+
+    <h1>Things To Do</h1>
+    <form id="todo_list" action="/" method="post">
+        Create a new todo:
+        <p>
+        <input name='input' type="text" size="25" value="">
+        <input type="submit" value="Create">
+    <hr>
+      {% if entries != None %}
+        {% for entry in entries %}
+          {{loop.index}}.
+          <input name='delete' type='checkbox' value="{{ entry }}">
+          {{ entry|safe }}
+          <p>
+        {% endfor %}
+      {% endif %}
+      <input type="submit" value="Mark checked as done">
+    </form>
+  </body>
+</html>
