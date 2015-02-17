@@ -1,0 +1,11 @@
+{
+  "name": "flask-todo",
+  "version": "0.0.1",
+  "title": "Todo List with Flask",
+  "description": "Use Flask to create a simple todo list.",
+  "keywords": [
+    "flask",
+    "web",
+    "database"
+  ]
+}
