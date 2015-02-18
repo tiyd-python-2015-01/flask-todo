@@ -13,7 +13,7 @@
 
   <form action="{{ url_for('delete_entry') }}" method=post class=delete-entry>
   {% for entry in entries %}
-  <input type="checkbox" name = selection>{{ entry.todo|safe }}<br>
+  <input type="checkbox" value={{entry[0]}} name = entry>{{entry[1]}}<br></input>
   {% else %}
     <li><em>Clean State</em>
   {% endfor %}
