@@ -38,12 +38,12 @@ def teardown_request(exception):
 
 @app.route('/')
 def show_list():
-    cur = g.db.execute('select task from entries order by id desc')
-    entries = [row[0] for row in cur.fetchall()]
+    cur = g.db.execute('select id, task from entries order by id desc')
+    entries = [(row[0], row[1]) for row in cur.fetchall()]
     return render_template('show_list.html', entries=entries)
 
 
-@app.route('/', methods=['POST'])
+@app.route('/add', methods=['POST'])
 def add_task():
     g.db.execute('insert into entries (task) values (?)', [request.form['new_task']])
     g.db.commit()
@@ -51,12 +51,13 @@ def add_task():
     return redirect(url_for('show_list'))
 
 
-#@app.route('/<postID>', methods=['POST'])
-#def remove_task():
-#    g.db.execute('delete from entries WHERE id = ?', [postID])
-#    g.db.commit()
-#    flash('Selected tasks have been removed')
-#    return redirect(url_for('show_list'))
+@app.route('/delete', methods=['POST'])
+def remove_task():
+    for checked in request.form.getlist('selected'):
+        g.db.execute('delete from entries where id = ?', checked)
+    g.db.commit()
+    flash('Selected tasks have been removed')
+    return redirect(url_for('show_list'))
 
 
 
