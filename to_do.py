@@ -43,8 +43,8 @@ def teardown_request(exception):
 
 @app.route('/')
 def show_entries():
-    cur = g.db.execute('select todo from entries order by id desc')
-    entries = [dict(todo=row[0]) for row in cur.fetchall()]
+    cur = g.db.execute('select id, todo from entries order by id desc')
+    entries = [(row[0],row[1]) for row in cur.fetchall()]
     return render_template('show_entries.html', entries=entries)
 
 # Adds an etry to microblog if user is logged in
@@ -60,11 +60,11 @@ def add_entry():
 
 
 @app.route('/delete', methods=['POST'])
-def delete_entry(entry_id):
+def delete_entry():
     if not session.get('logged_in'):
         abort(401)
-    for checked in [request_form['selection']]:
-        g.db.execute('delete from entries where id =',checked)
+    for checked in request.form.getlist('entry') :
+        g.db.execute('delete from entries where id =?',checked)
     g.db.commit()
     flash('To-dos have been updated')
     return redirect(url_for('show_entries'))
