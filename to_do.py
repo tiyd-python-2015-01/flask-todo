@@ -58,12 +58,13 @@ def add_entry():
     flash('New to-do was successfully posted')
     return redirect(url_for('show_entries'))
 
+
 @app.route('/delete', methods=['POST'])
-def delete_entry():
+def delete_entry(entry_id):
     if not session.get('logged_in'):
         abort(401)
-    for checked in [request.form['selection']]:
-        g.db.execute('delete from entries where todo = (?)',checked)
+    for checked in [request_form['selection']]:
+        g.db.execute('delete from entries where id =',checked)
     g.db.commit()
     flash('To-dos have been updated')
     return redirect(url_for('show_entries'))
