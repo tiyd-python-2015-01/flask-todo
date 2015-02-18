@@ -1,0 +1,15 @@
+{% extends "addtodo.html" %}
+{% block body %}
+    <form action="{{ url_for('delete')}}" method=post>
+      {% if entries != None %}
+        {% for entry in entries %}
+          {{loop.index}}.
+          <input name='delete' type='checkbox' value="{{ entry }}">
+          {{ entry|safe }}
+          <p>
+        {% endfor %}
+      {% endif %}
+      <input type="submit" value="Mark checked as done">
+    </form>
+  </body>
+{% endblock %}}
