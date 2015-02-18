@@ -4,6 +4,7 @@ import unittest
 import tempfile
 from hashlib import md5
 
+
 class ToDoTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -63,6 +64,6 @@ class ToDoTestCase(unittest.TestCase):
         rv = self.app.get('/done')
         assert 'Test' in str(rv.data)
 
-        
+
 if __name__ == '__main__':
     unittest.main()

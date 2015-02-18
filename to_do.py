@@ -1,6 +1,6 @@
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, abort,\
-     render_template, flash
+    render_template, flash
 from hashlib import md5
 from contextlib import closing
 
@@ -57,7 +57,7 @@ def login():
               g.db.execute(
               'select password from users where username = ?',
               [request.form['username']]).fetchall()[0][0]):
-              error = 'Invalid password'
+            error = 'Invalid password'
         else:
             session['logged_in'] = True
             session['username'] = request.form['username']
@@ -87,7 +87,7 @@ def create_user():
             g.db.execute(
                 'insert into users (username, password) values (?, ?)',
                 [request.form['username'],
-                md5(request.form['password'].encode('utf-8')).digest()])
+                 md5(request.form['password'].encode('utf-8')).digest()])
             g.db.commit()
             flash('Account successfully created!')
             return redirect(url_for('login'))
