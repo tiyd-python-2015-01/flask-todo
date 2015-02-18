@@ -1,0 +1,18 @@
+<!doctype html>
+<title>Flaskr</title>
+<!-- <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}"> -->
+<h1>To-do</h1>
+
+<form id="title" method="post" action={{ url_for('add_entry') }} class='add_entry'>
+  <input type="text" name="title" value="Order sushi">
+  <input type="submit" name="submit">
+</form>
+
+<form id="delete" method="post" action={{ url_for('remove_entry')}} class="delete-entry">
+  {% for entry in entries %}
+    <p><input type="checkbox" name="entry" value={{ entry[0] }} />{{ entry[1] }}</p>
+  {% else %}
+    <li><em>Nothing to do!</em>
+  {% endfor %}
+    <input type="submit" name="delete" value="Delete">
+</form>
