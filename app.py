@@ -1,6 +1,8 @@
 import sqlite3
 from flask import Flask, request, session, redirect, url_for, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.script import Manager
+from flask.ext.migrate import Migrate, MigrateCommand
 
 
 DATABASE = '/tmp/todo.db'
@@ -11,6 +13,10 @@ SQLALCHEMY_DATABASE_URI = "sqlite:///" + DATABASE
 app = Flask(__name__)
 app.config.from_object(__name__)
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+manager = Manager(app)
+manager.add_command('db', MigrateCommand)
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -45,4 +51,4 @@ def complete():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run()
+    manager.run()
