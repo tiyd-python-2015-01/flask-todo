@@ -1,53 +1,48 @@
 import sqlite3
-from contextlib import closing
-from flask import Flask, request, session, g, redirect, url_for, \
-     abort, render_template, flash
+from flask import Flask, request, session, redirect, url_for, render_template
+from flask.ext.sqlalchemy import SQLAlchemy
+
 
 DATABASE = '/tmp/todo.db'
 DEBUG = True
+SECRET_KEY = 'development-key'
+SQLALCHEMY_DATABASE_URI = "sqlite:///" + DATABASE
 
 app = Flask(__name__)
 app.config.from_object(__name__)
+db = SQLAlchemy(app)
 
-def connect_db():
-    return sqlite3.connect(app.config['DATABASE'])
+class Todo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(255))
 
-def init_db():
-    with closing(connect_db()) as db:
-        with app.open_resource('schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
+    def __init__(self, text):
+        self.text = text
 
-@app.before_request
-def before_request():
-    g.db = connect_db()
-
-@app.teardown_request
-def teardown_request(exception):
-    db = getattr(g, 'db', None)
-    if db is not None:
-        db.close()
+    def __repr__(self):
+        return "<Todo {}>".format(self.text)
 
 @app.route('/')
-def show_entries():
-   cur = g.db.execute('select id, title from entries order by id desc')
-   entries = [(row[0],row[1]) for row in cur.fetchall()]
-   return render_template('layout.html', entries=entries)
+def index():
+    todo_list = Todo.query.all()
+    return render_template('index.html', todos=todo_list)
 
-@app.route('/', methods=['POST'])
-def add_entry():
-    task = request.form['title']
-    g.db.execute('insert into entries (title) values (?)',
-                 (task,))
-    g.db.commit()
-    return redirect(url_for('show_entries'))
+@app.route('/add', methods=['POST'])
+def add_todo():
+    text = request.form['text_box']
+    todo = Todo(text)
+    db.session.add(todo)
+    db.session.commit()
+    return redirect(url_for('index'))
 
 @app.route('/remove', methods=['POST'])
-def remove_entry():
-    for checked in request.form.getlist('entry'):
-        g.db.execute('delete from entries where id = ?', checked)
-    g.db.commit()
-    return redirect(url_for('show_entries'))
+def complete():
+    ids = request.form.getlist('entry')
+    for id in ids:
+        todo = Todo.query.get(id)
+        db.session.delete(todo)
+    db.session.commit()
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run()
