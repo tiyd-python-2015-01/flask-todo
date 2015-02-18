@@ -1,65 +1,55 @@
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, abort, \
                   render_template, flash
-from contextlib import closing
+from flask.ext.sqlalchemy import SQLAlchemy
 
-
-#configuation
 DATABASE = '/tmp/todo.db'
 DEBUG = True
 SECRET_KEY = 'i-am-a-secret-key'
+SQLALCHEMY_DATABASE_URI = "sqlite:///" + DATABASE
 
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_envvar('TODO_SETTINGS', silent=True)
+db = SQLAlchemy(app)
 
+class Todo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(255))
 
-def connect_db():
-    return sqlite3.connect(app.config['DATABASE'])
+    def __init__(self, text):
+        self.text = text
 
+    def __repr__(self):
+        return "<Todo {}>".format(self.text)
 
-def init_db():
-    with closing(connect_db()) as db:
-        with app.open_resource('schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
-
-
-@app.before_request
-def before_request():
-    g.db = connect_db()
-
-
-@app.teardown_request
-def teardown_request(exception):
-    db = getattr(g, 'db', None)
-    if db is not None:
-        db.close()
 
 
 @app.route('/')
 def show_todos():
-    cur = g.db.execute('select id,todo from entries order by id desc')
-    entries = [dict(todo=row[1], id=row[0]) for row in cur.fetchall()]
-    return render_template('show_todos.html', entries=entries)
+    todo_list = Todo.query.all()
+    return render_template("show_todos.html",
+                           todos=todo_list)
 
 
 @app.route('/add', methods=['POST'])
 def add_todo():
-    g.db.execute('insert into entries (todo) values (?)',
-                  [request.form['todo']])
-    g.db.commit()
-    flash('New todo was successfully posted')
+    text = request.form['text_box']
+    todo = Todo(text)
+    db.session.add(todo)
+    db.session.commit()
     return redirect(url_for('show_todos'))
 
 
 @app.route('/delete', methods=['POST'])
 def delete_todo():
-    for checked in request.form.getlist('todos'):
-        g.db.execute('delete from entries where id = ?', [checked])
-        g.db.commit()
-        return redirect(url_for('show_todos'))
+    ids = request.form.getlist('todos')
+    for id in ids:
+        todo = Todo.query.get(id)
+        db.session.delete(todo)
+    db.session.commit()
+    return redirect(url_for('show_todos'))
 
 
 if __name__ == '__main__':
