@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block body %}
+  {% if session.logged_in %}
+    <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
+      <dl>
+        <dt>Create a new to do:
+        <dd><textarea name=todo rows=1 cols=40></textarea>
+            <input type=submit value=Create width="80" height="80">
+      </dl>
+    </form>
+  {% endif %}
+  <class=entries>
+  <form action="{{ url_for('delete_entry') }}" method=post class=delete-entry>
+  {% for entry in entries %}
+  <input type="checkbox" name = selection>{{ entry.todo|safe }}<br>
+  {% else %}
+    <li><em>Clean State</em>
+  {% endfor %}
+  <input type=submit value=Delete width="80" height="80">
+{% endblock %}
