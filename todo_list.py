@@ -56,9 +56,10 @@ def add_todo():
 
 @app.route('/delete', methods=['POST'])
 def delete_todo():
-    g.db.execute('delete todo from entries where entries = ?'), [request.form['entry.id']]
-    g.db.commit()
-    return redirect(url_for('show_todos'))
+    for checked in request.form.getlist('todos'):
+        g.db.execute('delete from entries where id = ?', [checked])
+        g.db.commit()
+        return redirect(url_for('show_todos'))
 
 
 if __name__ == '__main__':

@@ -10,12 +10,12 @@
   <ul class=entries>
   {% for entry in entries %}
   <form action="{{ url_for('delete_todo') }}" method=post class=subtract-entry>
-    <li><input type='checkbox' name='entry.id'>{{ entry.todo }}</input>
+    <li><input type='checkbox' name='todos' value ='{{entry.id}}'>{{ entry.todo }}</input>
   {% else %}
     <li><em>You have no todos!</em>
   {% endfor %}
   <dl>
-  <input type=submit value=Remove>
+  <input type='submit' value='Remove'>
 </dl>
 </form>
   </ul>
