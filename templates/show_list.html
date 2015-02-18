@@ -1,0 +1,23 @@
+<div class=page>
+  <h1>Todo List</h1>
+</div>
+{% block body %}
+  <form action="{{ url_for('add_task') }}" method=post>
+    <dl>
+      <dt>Create a new todo:
+      <dd><input type=text size=60 name=new_task>
+      <input type=submit value='Create'>
+    </dl>
+  </form>
+  <ul class=entries>
+  <h2>Current Tasks:</h2>
+  <form action="{{ url_for('remove_task') }}" method=post>
+  {% for task in entries %}
+    <input type='checkbox' value='{{ task[0] }}' name=selected>{{ task[1] }}<br></input>
+    {% else %}
+      <li><strong>You are all caught up!</strong>
+  {% endfor %}
+  <input type='submit' value="Delete Selected Tasks">
+  </form>
+  </ul>
+{% endblock %}
