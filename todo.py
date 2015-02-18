@@ -18,7 +18,8 @@ def show_entries():
     return entries
 
 def add_entry(new_todo):
-    if len(new_todo > 1):
+    print(new_todo)
+    if len(new_todo) > 1:
         g.db.execute('insert into entries (text) values (?)',
                      [new_todo])
         g.db.commit()
@@ -26,8 +27,6 @@ def add_entry(new_todo):
     return show_entries()
 
 def delete_entry(todo_togo):
-    print("Index = {}".format(todo_togo))
-
     g.db.execute('delete from entries where (text) = (?)',
                   [todo_togo])
     g.db.commit()
@@ -38,14 +37,24 @@ def delete_entry(todo_togo):
 def form():
     if request.method == 'GET':
         entries = show_entries()
-        return render_template('todo.html', entries=entries)
-    elif request.method == 'POST':
-        print(request.form)
-        if request.form['input']:
-            entries = add_entry(request.form['input'])
-        elif request.form['delete']:
-            entries = delete_entry(request.form['delete'])
-        return render_template('todo.html', entries=entries)
+        return render_template('listtodo.html', entries=entries)
+    # elif request.method == 'POST':
+    #     print(request.form)
+    #     if request.form['input']:
+    #         entries = add_entry(request.form['input'])
+    #     elif request.form['delete']:
+    #         entries = delete_entry(request.form['delete'])
+    #     return render_template('listtodo.html', entries=entries)
+
+@app.route("/add", methods=['POST'])
+def add():
+    entries = add_entry(request.form['input'])
+    return render_template('listtodo.html', entries=entries)
+
+@app.route("/delete", methods=['POST'])
+def delete():
+    entries = delete_entry(request.form['delete'])
+    return render_template('listtodo.html', entries=entries)
 
 def init_db():
     with closing(connect_db()) as db:

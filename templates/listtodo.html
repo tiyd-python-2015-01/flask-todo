@@ -1,6 +1,6 @@
 {% extends "addtodo.html" %}
 {% block body %}
-    <form action="{{ url_for('list_entries')}}" method=post>
+    <form action="{{ url_for('delete')}}" method=post>
       {% if entries != None %}
         {% for entry in entries %}
           {{loop.index}}.
