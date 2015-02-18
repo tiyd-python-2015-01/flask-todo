@@ -27,8 +27,9 @@ def add_entry(new_todo):
     return show_entries()
 
 def delete_entry(todo_togo):
-    g.db.execute('delete from entries where (text) = (?)',
-                  [todo_togo])
+    for item in todo_togo:
+        g.db.execute('delete from entries where (text) = (?)',
+                     [item])
     g.db.commit()
     return show_entries()
 
@@ -53,7 +54,7 @@ def add():
 
 @app.route("/delete", methods=['POST'])
 def delete():
-    entries = delete_entry(request.form['delete'])
+    entries = delete_entry(request.form.getlist('delete'))
     return render_template('listtodo.html', entries=entries)
 
 def init_db():
