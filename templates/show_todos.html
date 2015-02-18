@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block body %}
+    <form action="{{ url_for('add_todo') }}" method=post class=add-entry>
+      <dl>
+        <dd><dt>Add a todo: <input type=text size=30 name=todo>
+        <input type=submit value=Add>
+      </dl>
+    </form>
+
+  <ul class=entries>
+  {% for entry in entries %}
+  <form action="{{ url_for('delete_todo') }}" method=post class=subtract-entry>
+    <li><input type='checkbox' name='entry.id'>{{ entry.todo }}</input>
+  {% else %}
+    <li><em>You have no todos!</em>
+  {% endfor %}
+  <dl>
+  <input type=submit value=Remove>
+</dl>
+</form>
+  </ul>
+{% endblock %}
