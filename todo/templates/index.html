@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block body %}
+    <h1>Please Select an Action:</h1>
+    <ul class="entries">
+        <li><button onclick="location.href='{{url_for('add_entry')}}'">Add Entry</button></li>
+        <li><button onclick="location.href='{{url_for('show_entries')}}'">See To Do List</button></li>
+        <li><button onclick="location.href='{{url_for('display_done')}}'">See Completed Tasks</button></li>
+    </ul>
+{% endblock %}

@@ -17,19 +17,31 @@ h2, li          { font-size: 1.2em; }
                   border: 1px solid #aacbe2; }
 .error          { background: #f0d6d6; padding: 0.5em; }
 
-div.ui-btn, input[type="submit"] {
-    width:60px;
+div.ui-btn, button, input[type="submit"] {
+    /*width:60px;*/
     background:#09C;
     color:#fff;
     font-family: Tahoma, Geneva, sans-serif;
-    height:20px;
+    /*height:20px;*/
     -webkit-border-radius: 15px;
     -moz-border-radius: 15px;
     border-radius: 15px;
     border: 1p solid #999;
     margin-top: 2px
 }
-div.ui-btn, input[type="submit"]:hover{
+div.ui-btn, button:hover, input[type="submit"]:hover{
     background:#cccccc;
     color:#09C;
+}
+div.ui-btn, input[class="edit"] {
+    /*width:60px;*/
+    background:#cccccc;
+    color:#09C;
+    font-family: Tahoma, Geneva, sans-serif;
+    /*height:20px;*/
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    border: 1p solid #999;
+    margin-top: 2px
 }
