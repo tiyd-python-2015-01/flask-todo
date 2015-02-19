@@ -21,30 +21,39 @@
 
             <div class="row">
               <div class="large-5 medium-5 columns">
-                <form method='post' action="{{ url_for('home_page') }}">
+                <form method='post' action="{{ url_for('added_task') }}">
                 <label>Create a new to do</label>
                 <input type="text" name='to_do' placeholder="example - buy monkeys" />
               </div>
               <button type='submit' class="small button" />Create</button>
-              <!-- need to add a user success message -->
             </form>
             </div>
-            {% block body %}
-
-              {% if get_flashed_messages() %}
-                <p class=flashes>
+            {% if get_flashed_messages() %}
+              <p class=flashes>
                 {% for message in get_flashed_messages() %}
                   {{ message }}
-                {% endfor %}
+              {% endfor %}
               </p>
-              {% endif %}
+            {% endif %}
 
-            <div class="row">
-              <div class="large-5 medium-5 columns">
-                <a href="/list" class="small button">View List</a>
-              </div>
-            </div>
-            {% endblock %}
+            {% if current_todos %}
+            <h3>Need To Do</h3>
+            <form method='post' action="{{ url_for('list_completion') }}">
+            <label>Tick boxes below, then click 'Completed' to remove an item from your list.</label>
+              {% for task in current_todos %}
+              <input id='{{ task.id }}' name='checkboxes' type="checkbox" value='{{ task.id }}'><label for="checkbox1">{{ task.text }}</label><br>
+              {% endfor %}
+            <br><button class="button tiny">Completed</button>
+            </form>
+            {% endif %}
+
+            {% if completed_todos %}
+            <h3>Completed To Dos</h3>
+              {% for task in completed_todos %}
+              <div class='row'>
+                <div class="large-5 medium-5 columns">- {{ task.text }}</div></div>
+              {% endfor %}
+            {% endif %}
 
       	</div>
       </div>

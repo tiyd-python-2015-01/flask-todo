@@ -7,8 +7,8 @@
 <form method='post' action="{{ url_for('list_completion') }}">
 <label>Tick boxes below, then click 'Completed' to remove an item from your list.</label>
 
-{% for id, task in entries %}
-<input id='{{ id }}' name='checkboxes' type="checkbox" value='{{ id }}'><label for="checkbox1">{{ task }}</label><br>
+{% for task in entries %}
+<input id='{{ task.id }}' name='checkboxes' type="checkbox" value='{{ task.id }}'><label for="checkbox1">{{ task.text }}</label><br>
 {% endfor %}
 
 <br><button class="small button">Completed</button>
