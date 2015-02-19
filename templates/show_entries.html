@@ -4,18 +4,38 @@
     <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
       <dl>
         <dt>Create a new to do:
-        <dd><textarea name=todo rows=1 cols=40></textarea>
+        <dt><label for="textarea">To Do</label><dd>
+        <textarea name=todo rows=1 cols=40></textarea>
+        <dt><label for="textarea">Due Date</label>
+        <dd><input type="date" name=due_date></input>
+
             <input type=submit value=Create width="80" height="80">
+
+
       </dl>
     </form>
   {% endif %}
   <class=entries>
-
+  <h1>All To Do's</h1>
+  <h2>   To Do              Due Date</h2>
   <form action="{{ url_for('delete_entry') }}" method=post class=delete-entry>
-  {% for entry in entries %}
-  <input type="checkbox" value={{entry[0]}} name = entry>{{entry[1]}}<br></input>
+  {% for todo in entries %}
+   {% if todo in pastdue %}<strong>{% endif %}
+   <input type="checkbox" name="entry" id="todo-{{ todo.id }}" value="{{ todo.id }}"/>
+   <label for="todo-{{ todo.id }}">{{ todo.todo}}         {{ todo.due_date.strftime('%m/%d/%Y') }}</label><br>
+   {% if todo in pastdue %}</strong>{% endif %}
   {% else %}
     <li><em>Clean State</em>
   {% endfor %}
-  <input type=submit value=Delete width="80" height="80">
+  <input type=submit value="Mark as Done" width="80" height="80">
+  </form>
+  <h2>Completed To Do's</h2>
+  <ul>
+  {% for todo in completed %}
+    <li>
+    {{todo.todo}}    {{todo.completed_at.strftime('%m/%d/%Y') }}
+  </li>
+  {% endfor %}
+  </ul>
+
 {% endblock %}
