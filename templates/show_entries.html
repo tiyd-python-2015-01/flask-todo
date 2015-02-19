@@ -8,34 +8,30 @@
         <textarea name=todo rows=1 cols=40></textarea>
         <dt><label for="textarea">Due Date</label>
         <dd><input type="date" name=due_date></input>
-
             <input type=submit value=Create width="80" height="80">
-
-
       </dl>
     </form>
-  {% endif %}
+    <br>
+
+    <form action="{{ url_for('show_completed') }}" method=post class=show_completed>
+      <input type=submit value="See Completed Tasks" width="80" height="80" color='blue'>
+      <br></form>
+
+
   <class=entries>
-  <h1>All To Do's</h1>
-  <h2>   To Do              Due Date</h2>
-  <form action="{{ url_for('delete_entry') }}" method=post class=delete-entry>
+  <h2>All To Do's</h2>
+  <h3>   To Do   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp            Due Date</h3>
+  <form action="{{ url_for('complete_entry') }}" method=post class=delete-entry>
   {% for todo in entries %}
-   {% if todo in pastdue %}<strong>{% endif %}
+   {% if todo in pastdue %}<strong><font color="red">{% endif %}
    <input type="checkbox" name="entry" id="todo-{{ todo.id }}" value="{{ todo.id }}"/>
-   <label for="todo-{{ todo.id }}">{{ todo.todo}}         {{ todo.due_date.strftime('%m/%d/%Y') }}</label><br>
-   {% if todo in pastdue %}</strong>{% endif %}
+   <label for="todo-{{ todo.id }}">{{ todo.todo}}    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp    {{ todo.due_date.strftime('%m/%d/%Y') }}</label><br>
+   {% if todo in pastdue %}</strong><font color="black">{% endif %}
   {% else %}
     <li><em>Clean State</em>
   {% endfor %}
-  <input type=submit value="Mark as Done" width="80" height="80">
-  </form>
-  <h2>Completed To Do's</h2>
-  <ul>
-  {% for todo in completed %}
-    <li>
-    {{todo.todo}}    {{todo.completed_at.strftime('%m/%d/%Y') }}
-  </li>
-  {% endfor %}
-  </ul>
+  <br>
+   <input type=submit value="Mark as Done" width="80" height="80">
 
+  {% endif %}
 {% endblock %}

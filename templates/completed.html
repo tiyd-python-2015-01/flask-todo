@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block body %}
+  {% if session.logged_in %}
+      <class=entries>
+      </form>
+      <h3>Completed To Do's</h3>
+      <ul>
+        {% for todo in completed %}
+        <li>
+         {{todo.todo}}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp   {{todo.completed_at.strftime('%m/%d/%Y') }}
+        </li>
+        {% endfor %}
+      </ul>
+   {% endif %}
+{% endblock %}
