@@ -14,10 +14,16 @@ def home_page():
 
 @app.route('/add_task', methods=['POST'])
 def added_task():
-    todo = Todo(request.form['to_do'])
-    db.session.add(todo)
+    form = TodoForm()
+    todo_task = Todo(form.text.data)
+    todo_date = Todo(form.due_date.data)
+
+    db.session.add(todo_task, todo_date)
     db.session.commit()
-    flash("You added: {}".format(request.form['to_do']))
+
+    flash("You added: {}".format(form.text.data))
+    if form.due_date.data:
+        flash("This task is due: {}".format(form.due_date.data))
     return redirect(url_for('home_page'))
 
 

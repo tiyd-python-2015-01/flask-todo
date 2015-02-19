@@ -23,15 +23,17 @@
               <div class="large-5 medium-5 columns">
                 <form method='post' action="{{ url_for('added_task') }}">
                 <label>Create a new to do</label>
-                <input type="text" name='to_do' placeholder="example - buy monkeys" />
-              </div>
-              <button type='submit' class="small button" />Create</button>
+                <input type="text" name='text' placeholder="example - buy monkeys" />
+                <input type="date" name='due_date' placeholder="12/02/2015" />
+                <button type='submit' class="button tiny" />Create</button>
+            </div>
             </form>
             </div>
             {% if get_flashed_messages() %}
               <p class=flashes>
                 {% for message in get_flashed_messages() %}
-                  {{ message }}
+                  {{ message }}<br>
+
               {% endfor %}
               </p>
             {% endif %}

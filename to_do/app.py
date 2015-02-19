@@ -17,8 +17,9 @@ class Todo(db.Model):
     completed_at = db.Column(db.DateTime)
     due_date = db.Column(db.DateTime)
 
-    def __init__(self, text):
+    def __init__(self, text, due_date=None):
         self.text = text
+        self.due_date = due_date
 
     def __repr__(self):
         return "<Todo {}>".format(self.text)
