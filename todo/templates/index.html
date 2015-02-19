@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <h1>Create a new todo</h1>
+    <form action="{{ url_for('make_a_todo') }}" method="post">
+        <input type="text" name="text"/>
+        <input type="submit" value="Create todo"/>
+    </form>
+    <h1>All todos</h1>
+    <form action="{{ url_for('complete_tasks') }}" method="post">
+        <ul>
+            {% for todo in todos %}
+                <li>
+                    <input type="checkbox" name="todo" id="todo-{{ todo.id }}" value="{{ todo.id }}"/>
+                    <label for="todo-{{ todo.id }}">{{ todo.text }}</label>
+                </li>
+            {% endfor %}
+        </ul>
+        <input type="submit" value="Mark checked as done"/>
+    </form>
+{% endblock %}
