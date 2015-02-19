@@ -27,43 +27,61 @@
       </form>
     </div>
 
-    <form id="delete" name="entry" method="post" action={{ url_for('complete')}} class="delete-entry">
-      <table>
-        <thead>
-          <tr>
-            <th>date</th>
-            <th>toggle</th>
-            <th>task></th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for todo in todos %}
-          <div class='row'>
+    <div class='row'>
+      <div class='large-12 medium-12 small-12 columns'>
+        <form id="delete" name="entry" method="post" action={{ url_for('complete')}} class="delete-entry">
+          <table>
+            <thead>
+              <tr>
+                <th>toggle</th>
+                <th>date</th>
+                <th>task</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for todo in todos %}
+              <tr>
+              {% if todo.complete_by != None %}
+                <td>
+                  <div class='round switch'>
+                    <input id={{ todo.id }} type="checkbox" name="entry" value={{ todo.id }} />
+                    <label for={{ todo.id }}></label>
+                  </div>
+                </td>
+                {% if todo.complete_by < current_date %}
+                  <td><span class='alert label'>{{ todo.complete_by.strftime('%m/%d %H:%M') }}</span></td>
+                {% else %}
+                  <td>{{ todo.complete_by.strftime('%m/%d %H:%M') }}</td>
+                {% endif %}
+                <td>{{ todo.text }}</td>
+              </tr>
+              {% else %}
+              <tr>
+                <td>
+                  <div class='round switch'>
+                    <input id={{ todo.id }} type="checkbox" name="entry" value={{ todo.id }} />
+                    <label for={{ todo.id }}></label>
+                  </div>
+                </td>
+                <td></td>
+                <td>{{ todo.text }}</td>
+              </tr>
+              {% endif %}
+            {% else %}
+                  <em>Nothing to do!</em>
+            {% endfor %}
+          </tbody>
+        </table>
+          <div class="row">
             <div class='large-12 medium-12 small-12 columns'>
-          {% if todo.complete_by != None %}
-              <div class='round switch'>
-                <h3><input id={{ todo.id }} type="checkbox" name="entry" value={{ todo.id }} />
-                <label for={{ todo.id }}></label>
-                {{ todo.complete_by.strftime('%m/%d %H:%M') }} {{ todo.text }}</h3>
-              </div>
-          {% else %}
-            <div class='round switch'>
-              <h3><input id={{ todo.id }} type="checkbox" name="entry" value={{ todo.id }} />
-              <label for={{ todo.id }}></label>
-              {{ todo.text }}</h3>
-            </div>
-          {% endif %}
-        {% else %}
-              <em>Nothing to do!</em>
+              <ul class="button-group round">
+                <li><input class='button' type="submit" name="delete" value="Mark completed"></li>
+                <li><a class='button' href={{ url_for('show_completed')}}>View completed list</a></li>
+              </ul>
             </div>
           </div>
-        {% endfor %}
-      <div class="row">
-        <ul class="button-group round">
-          <li><input class='button' type="submit" name="delete" value="Mark completed"></li>
-          <li><a class='button' href={{ url_for('show_completed')}}>View completed list</a></li>
-        </ul>
+        </form>
       </div>
-    </form>
+    </div>
   </body>
 </html>

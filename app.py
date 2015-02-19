@@ -34,9 +34,11 @@ class Todo(db.Model):
 
 @app.route('/')
 def index():
+    current_date = datetime.utcnow()
     current_todos = Todo.query.filter(Todo.completed_at == None).order_by(Todo.complete_by).all()
     completed_todos = Todo.query.filter(Todo.completed_at != None).all()
     return render_template('index.html',
+                            current_date = current_date,
                             todos=current_todos,
                             completed=completed_todos[::-1])
 
