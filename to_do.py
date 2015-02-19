@@ -39,11 +39,9 @@ class Todo(db.Model):
 @app.route('/')
 def show_entries():
     current_todo_list = Todo.query.filter(Todo.completed_at==None).order_by(Todo.due_date.desc()).all()
-    completed_todo_list = Todo.query.filter(Todo.completed_at!=None).order_by(Todo.completed_at.desc()).all()
     past_due_list = [elem for elem in current_todo_list if elem.due_date < datetime.utcnow()]
     return render_template('show_entries.html',
                             entries=current_todo_list,
-                            completed=completed_todo_list,
                             pastdue = past_due_list)
 
 
@@ -60,8 +58,8 @@ def add_entry():
     return redirect(url_for('show_entries'))
 
 
-@app.route('/delete', methods=['POST'])
-def delete_entry():
+@app.route('/mark_completed', methods=['POST'])
+def complete_entry():
     if not session.get('logged_in'):
         abort(401)
     ids = request.form.getlist('entry')
@@ -73,6 +71,13 @@ def delete_entry():
     flash('To-dos have been updated')
     return redirect(url_for('show_entries'))
 
+@app.route('/completed', methods=['GET','POST'])
+def show_completed():
+    if not session.get('logged_in'):
+        abort(401)
+    completed_todo_list = Todo.query.filter(Todo.completed_at!=None).order_by(Todo.completed_at.desc()).all()
+    return render_template('completed.html',
+                        completed=completed_todo_list)
 
 # Login management
 @app.route('/login', methods=['GET', 'POST'])
