@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block body %}
+    <form action="{{ url_for('add_todo') }}" method=post class=add-entry>
+      <dl>
+        {{ new_todo_form.hidden_tag() }}
+        {{ new_todo_form.text(size=30, value='Read a book') }}
+      </dl>
+      <dl>
+        {{ new_todo_date.hidden_tag() }}
+        {{ new_todo_date.completed_at(size=30) }}
+        <input type='submit' value='Add'>
+    </form>
+  <ul class=entries>
+  {% for todo in todos %}
+  {% if todo.expected_at > date_now %}
+  <form action="{{ url_for('finish_todo') }}" method=post class=subtract-entry>
+  <li><input type='checkbox' name='todos' value ='{{todo.id}}'>{{ todo.text }} {{ todo.expected_at.strftime('%m/%d/%Y') }}</input></li>
+  {% else %}
+  <form action="{{ url_for('finish_todo') }}" method=post class=subtract-entry>
+  <em><li><input type='checkbox' name='todos' value ='{{todo.id}}'>{{ todo.text }} {{ todo.expected_at.strftime('%m/%d/%Y') }}</input></li></em>
+  {% endif %}
+  {% else %}
+    <li><em>You have no todos!</em>
+  {% endfor %}
+  <dl>
+  <input type='submit' value='Remove'>
+</dl>
+</form>
+  </ul>
+  <h2>See Completed todos</h2>
+  <form action="{{ url_for('show_completed') }}" method=post class=add-entry>
+    <dl>
+      <input type='submit' value='show'>
+    </dl>
+  </form>
+{% endblock %}

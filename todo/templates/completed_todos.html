@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>Completed todos</h2>
+  <ul>
+    {% for todo in finished %}
+    <li> {{ todo.text }} {{todo.completed_at.strftime('%m/%d/%Y')  }} </li>
+    {% else %}
+    <li><em>Don't be so lazy!</em>
+    {% endfor %}
+  </ul>
+  <form action="{{ url_for('return_to_main') }}" method=post class=show>
+    <dl>
+      <input type='submit' value='Return'>
+    </dl>
+  </form>
+{% endblock %}
