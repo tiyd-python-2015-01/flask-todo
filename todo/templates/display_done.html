@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+    <dl>
+        <dt>Finished Items:
+    </dl>
+    <ul class=entries>
+    {% for entry in entries %}
+        <li>{{ entry.text|safe }} </li>
+        <li>Completed on: {{ entry.completed_at }}</li>
+    {% else %}
+        <li>Nothing done yet!  Get to work!
+    </ul>
+    {% endfor %}
+{% endblock %}

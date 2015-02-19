@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block body %}
+    <form action="{{ url_for('add_entry') }}" method=POST class=add-entry>
+        <dl>
+            <dt>Add Task:
+            <dd><textarea name=todo rows=5 cols=40></textarea>
+            <dt>Deadline:
+            <dd><textarea name=date rows=1 cols=20></textarea>
+            <dd><input type=submit value=Add>
+        </dl>
+    </form>
+{% endblock %}

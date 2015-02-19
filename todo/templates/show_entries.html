@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block body %}
+    <ul class=entries>
+    <form action="{{ url_for('remove_entry')}}" method=POST class=remove-entry>
+    {% for entry in entries %}
+        <li><input type=checkbox value={{ entry.id }} name=item>{{ entry.text|safe }}</input>  Deadline: {{ entry.due_date }}</li>
+    {% else %}
+        <li>Nothing to do!</li>
+    {% endfor %}
+    {% if entries %}
+        <li><input type=submit value=Remove></li>
+    {% endif %}
+    </form>
+    </ul>
+{% endblock %}
