@@ -1,0 +1,70 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your To Do List</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='foundation.css') }}">
+    <script src="js/vendor/modernizr.js"></script>
+  </head>
+  <body>
+
+    <div class="row">
+      <div class="large-12 columns">
+        <h1>To Do List</h1>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="large-12 columns">
+      	<div class="panel">
+
+            <div class="row">
+              <div class="large-5 medium-5 columns">
+                <form method='post' action="{{ url_for('added_task') }}">
+                <label>Create a new to do</label>
+                <input type="text" name='text' placeholder="example - buy monkeys" />
+                <input type="date" name='due_date' placeholder="12/02/2015" />
+                <button type='submit' class="button tiny" />Create</button>
+            </div>
+            </form>
+            </div>
+            {% if get_flashed_messages() %}
+              <p class=flashes>
+                {% for message in get_flashed_messages() %}
+                  {{ message }}<br>
+
+              {% endfor %}
+              </p>
+            {% endif %}
+
+            {% if current_todos %}
+            <h3>Need To Do</h3>
+            <form method='post' action="{{ url_for('list_completion') }}">
+            <label>Tick boxes below, then click 'Completed' to remove an item from your list.</label>
+              {% for task in current_todos %}
+              <input id='{{ task.id }}' name='checkboxes' type="checkbox" value='{{ task.id }}'><label for="checkbox1">{{ task.text }}</label><br>
+              {% endfor %}
+            <br><button class="button tiny">Completed</button>
+            </form>
+            {% endif %}
+
+            {% if completed_todos %}
+            <h3>Completed To Dos</h3>
+              {% for task in completed_todos %}
+              <div class='row'>
+                <div class="large-5 medium-5 columns">- {{ task.text }}</div></div>
+              {% endfor %}
+            {% endif %}
+
+      	</div>
+      </div>
+    </div>
+
+    <script src="js/vendor/jquery.js"></script>
+    <script src="js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+    </script>
+  </body>
+</html>
