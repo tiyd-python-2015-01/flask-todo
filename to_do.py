@@ -1,60 +1,61 @@
-# all the imports
-import sqlite3
+from datetime import datetime
 from flask import Flask, request, session, g, redirect, url_for, \
      abort, render_template, flash
 from contextlib import closing
 
-# configuration
-DATABASE = '/tmp/to_do.db'
+from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.script import Manager
+from flask.ext.migrate import Migrate, MigrateCommand
+from flask.ext.script.commands import ShowUrls, Clean
+
+
+DATABASE = '/tmp/todo.db'
 DEBUG = True
 SECRET_KEY = 'this is hard'
-USERNAME = 'admin'
-PASSWORD = 'default'
+SQLALCHEMY_DATABASE_URI = "sqlite:///" + DATABASE
 
-# create our little application :)
 app = Flask(__name__)
 app.config.from_object(__name__)
+db = SQLAlchemy(app)
+migrate = Migrate(app,db)
+manager = Manager(app)
+manager.add_command('db',MigrateCommand)
 
-# initializes the database
-def init_db():
-    with closing(connect_db()) as db:
-        with app.open_resource('schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
 
-# Connects to the database
-def connect_db():
-    return sqlite3.connect(app.config['DATABASE'])
 
-# Special functions to be used before and after requests.
-# g is a special object that stores connection info
+class Todo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    todo = db.Column(db.String(255), nullable=False)
+    completed_at = db.Column(db.DateTime)
+    due_date = db.Column(db.DateTime)
 
-@app.before_request
-def before_request():
-    g.db = connect_db()
+    def __init__(self, text,due_date):
+        self.todo = text
+        self.due_date = due_date
 
-@app.teardown_request
-def teardown_request(exception):
-    db = getattr(g, 'db', None)
-    if db is not None:
-        db.close()
-
-# Shows all entries in micronlog
+    def __repr__(self):
+        return "<Todo {}>".format(self.text)
 
 @app.route('/')
 def show_entries():
-    cur = g.db.execute('select id, todo from entries order by id desc')
-    entries = [(row[0],row[1]) for row in cur.fetchall()]
-    return render_template('show_entries.html', entries=entries)
+    current_todo_list = Todo.query.filter(Todo.completed_at==None).order_by(Todo.due_date.desc()).all()
+    completed_todo_list = Todo.query.filter(Todo.completed_at!=None).order_by(Todo.completed_at.desc()).all()
+    past_due_list = [elem for elem in current_todo_list if elem.due_date < datetime.utcnow()]
+    return render_template('show_entries.html',
+                            entries=current_todo_list,
+                            completed=completed_todo_list,
+                            pastdue = past_due_list)
 
-# Adds an etry to microblog if user is logged in
 
 @app.route('/add', methods=['POST'])
 def add_entry():
     if not session.get('logged_in'):
         abort(401)
-    g.db.execute('insert into entries (todo) values (?)', [request.form['todo']])
-    g.db.commit()
+    text =  request.form['todo']
+    duedate = request.form['due_date']
+    todo = Todo(text, datetime.strptime(duedate, '%Y-%m-%d'))
+    db.session.add(todo)
+    db.session.commit()
     flash('New to-do was successfully posted')
     return redirect(url_for('show_entries'))
 
@@ -63,11 +64,15 @@ def add_entry():
 def delete_entry():
     if not session.get('logged_in'):
         abort(401)
-    for checked in request.form.getlist('entry') :
-        g.db.execute('delete from entries where id =?',checked)
-    g.db.commit()
+    ids = request.form.getlist('entry')
+    for id in ids:
+        todo = Todo.query.get(id)
+        todo.completed_at = datetime.utcnow()
+        db.session.add(todo)
+    db.session.commit()
     flash('To-dos have been updated')
     return redirect(url_for('show_entries'))
+
 
 # Login management
 @app.route('/login', methods=['GET', 'POST'])
@@ -93,4 +98,4 @@ def logout():
 
 # to start the application
 if __name__ == '__main__':
-    app.run()
+    manager.run()
